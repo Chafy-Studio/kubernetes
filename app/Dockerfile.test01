@@ -1,0 +1,28 @@
+# Stage 1: Build the Go application
+FROM golang:1.20-alpine AS builder
+
+ADD . /src
+
+WORKDIR /src
+
+RUN go get -d -v -t
+
+RUN GOOS=linux GOARCH=amd64 go build -v -o sample-api
+# RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
+
+
+# Stage 2: Create a minimal container
+FROM alpine:3.17.3
+EXPOSE 8080
+CMD ["sample-api"]
+ENV VERSION 1.1.4
+COPY --from=builder /src/sample-api /usr/local/bin/sample-api
+RUN chmod +x /usr/local/bin/sample-api
+
+
+
+WORKDIR /root/
+
+COPY --from=builder /app/app .
+
+CMD ["./app"]
