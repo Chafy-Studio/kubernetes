@@ -6,7 +6,6 @@ data:
   startup.sh: |
     #!/bin/sh
     echo "Pod Name: $(hostname)" > /usr/share/nginx/html/index.html
-    echo "Revision: ${ARGOCD_APP_REVISION}" >> /usr/share/nginx/html/index.html
     nginx -g 'daemon off;'
 ---
 apiVersion: argoproj.io/v1alpha1
